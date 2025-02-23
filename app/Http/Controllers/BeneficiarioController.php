@@ -2,78 +2,114 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beneficiario; // Importa el modelo Beneficiario
+use App\Models\Beneficiario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Para validar los datos
 
 class BeneficiarioController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $beneficiarios = Beneficiario::all();
-        return response()->json($beneficiarios);
+        $beneficiarios = Beneficiario::all(); // Obtener todos los beneficiarios
+        return view('beneficiarios.index', compact('beneficiarios')); // Pasar a la vista
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('beneficiarios.create'); // Mostrar formulario de creación
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:12',
-            'fechanac' => 'required|date',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|min:0ng',
+        // Validar los datos del formulario
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Cedula' => 'required|string|unique:beneficiarios|max:20',
+            'Direccion' => 'required|string|max:255',
+            'Telefono' => 'required|string|max:20',
+            'Informe_Medico' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422); // Código 422 para errores de validación
-        }
+        // Crear el nuevo beneficiario
+        Beneficiario::create($request->all());
 
-        $beneficiario = Beneficiario::create($validator->validated());
-        return response()->json($beneficiario, 201); // Código 201 para creación exitosa
+        return redirect()->route('beneficiarios.index')
+                         ->with('success', 'Beneficiario creado con éxito.');
     }
 
     /**
      * Display the specified resource.
+     *
+     * @param  \App\Models\Beneficiario  $beneficiario
+     * @return \Illuminate\Http\Response
      */
-    public function show(Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function show(Beneficiario $beneficiario)
     {
-        return response()->json($beneficiario);
+        return view('beneficiarios.show', compact('beneficiario')); // Mostrar detalles del beneficiario
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Beneficiario  $beneficiario
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Beneficiario $beneficiario)
+    {
+        return view('beneficiarios.edit', compact('beneficiario')); // Mostrar formulario de edición
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Beneficiario  $beneficiario
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function update(Request $request, Beneficiario $beneficiario)
     {
-        $validator = Validator::make($request->all(), [
-           'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:12',
-            'fechanac' => 'required|date',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|min:0ng',
-            // Agrega aquí las validaciones para otros campos
+        // Validar los datos del formulario
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Cedula' => 'required|string|unique:beneficiarios,Cedula,'.$beneficiario->id.'|max:20',
+            'Direccion' => 'required|string|max:255',
+            'Telefono' => 'required|string|max:20',
+            'Informe_Medico' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Actualizar el beneficiario
+        $beneficiario->update($request->all());
 
-        $beneficiario->update($validator->validated());
-        return response()->json($beneficiario);
+        return redirect()->route('beneficiarios.index')
+                         ->with('success', 'Beneficiario actualizado con éxito.');
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Beneficiario  $beneficiario
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function destroy(Beneficiario $beneficiario)
     {
         $beneficiario->delete();
-        return response()->json(null, 204); // Código 204 para eliminación exitosa (sin contenido)
+
+        return redirect()->route('beneficiarios.index')
+                         ->with('success', 'Beneficiario eliminado con éxito.');
     }
 }
