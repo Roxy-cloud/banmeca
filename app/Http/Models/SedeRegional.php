@@ -20,6 +20,6 @@ class SedeRegional extends Model
 
     public function sedesParroquiales()
     {
-        return $this->hasMany(SedeParroquial::class, 'sede_regional_id');
+        return $this->hasMany(SedeParroquial::class, 'SedeRegional_id');
     }
 }
