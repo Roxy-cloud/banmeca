@@ -4,71 +4,81 @@ namespace App\Http\Controllers;
 
 use App\Models\Benefactor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+
+namespace App\Http\Controllers;
+
+use App\Models\Benefactor;
+use Illuminate\Http\Request;
 
 class BenefactorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Mostrar todos los benefactores
     public function index()
     {
         $benefactors = Benefactor::all();
         return response()->json($benefactors);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Mostrar el formulario para crear un nuevo benefactor
+    public function create()
+    {
+        // Aquí puedes retornar una vista de formulario para crear un nuevo benefactor.
+        return response()->json(['message' => 'Información del Benefactor']);
+    }
+
+    // Almacenar un nuevo benefactor
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required',
-            'tipo' => 'required|in:Persona Natural,Institución',
-            'rif_cedula' => 'required|unique:benefactors',
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Tipo' => 'required|in:Persona Natural,Institución',
+            'RIF_Cedula' => 'required|string|unique:benefactors',
+            'Direccion' => 'nullable|string|max:255',
+            'Telefono' => 'nullable|string|max:15',
+            'Correo_Electronico' => 'nullable|email|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $benefactor = Benefactor::create($validator->validated());
+        $benefactor = Benefactor::create($request->all());
         return response()->json($benefactor, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Mostrar un benefactor específico
     public function show(Benefactor $benefactor)
+{
+    $donaciones = $benefactor->donacions; // Carga las donaciones del benefactor
+    
+    return view('benefactors.show', compact('benefactor', 'donaciones')); // Pasa los datos a la vista
+}
+
+    // Mostrar el formulario para editar un benefactor específico
+    public function edit($id)
     {
+        $benefactor = Benefactor::findOrFail($id);
         return response()->json($benefactor);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Benefactor $benefactor)
+    // Actualizar un benefactor específico
+    public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required',
-            'tipo' => 'required|in:Persona Natural,Institución',
-            'rif_cedula' => 'required|unique:benefactors,rif_cedula,' . $benefactor->id . ',id',
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Tipo' => 'required|in:Persona Natural,Institución',
+            'RIF_Cedula' => 'required|string|unique:benefactors,RIF_Cedula,' . $id,
+            'Direccion' => 'nullable|string|max:255',
+            'Telefono' => 'nullable|string|max:15',
+            'Correo_Electronico' => 'nullable|email|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $benefactor->update($validator->validated());
+        $benefactor = Benefactor::findOrFail($id);
+        $benefactor->update($request->all());
         return response()->json($benefactor);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Benefactor $benefactor)
+    // Eliminar un benefactor específico
+    public function destroy($id)
     {
+        $benefactor = Benefactor::findOrFail($id);
         $benefactor->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Informacion borrada exitosamente']);
     }
 }
