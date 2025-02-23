@@ -2,78 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beneficiario; // Importa el modelo Beneficiario
+use App\Models\Categoria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Para validar los datos
 
-class BeneficiarioController extends Controller
+class CategoriaController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $beneficiarios = Beneficiario::all();
-        return response()->json($beneficiarios);
+        $categorias = Categoria::all(); // Obtener todas las categorías
+        return view('categorias.index', compact('categorias')); // Pasar a la vista
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('categorias.create'); // Mostrar formulario de creación
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:12',
-            'fechanac' => 'required|date',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|min:14',
+        // Validar los datos del formulario
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Descripcion' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422); // Código 422 para errores de validación
-        }
+        // Crear la nueva categoría
+        Categoria::create($request->all());
 
-        $beneficiario = Beneficiario::create($validator->validated());
-        return response()->json($beneficiario, 201); // Código 201 para creación exitosa
+        return redirect()->route('categorias.index')
+                         ->with('success', 'Categoría creada con éxito.');
     }
 
     /**
      * Display the specified resource.
+     *
+     * @param  \App\Models\Categoria  $categoria
+     * @return \Illuminate\Http\Response
      */
-    public function show(Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function show(Categoria $categoria)
     {
-        return response()->json($beneficiario);
+        return view('categorias.show', compact('categoria')); // Mostrar detalles de la categoría
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Categoria  $categoria
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Categoria $categoria)
+    {
+        return view('categorias.edit', compact('categoria')); // Mostrar formulario de edición
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Categoria  $categoria
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function update(Request $request, Categoria $categoria)
     {
-        $validator = Validator::make($request->all(), [
-           'nombre' => 'required|string|max:255',
-            'cedula' => 'required|string|max:12',
-            'fechanac' => 'required|date',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|min:14',
-            // Agrega aquí las validaciones para otros campos
+        // Validar los datos del formulario
+        $request->validate([
+            'Nombre' => 'required|string|max:255',
+            'Descripcion' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Actualizar la categoría existente
+        $categoria->update($request->all());
 
-        $beneficiario->update($validator->validated());
-        return response()->json($beneficiario);
+        return redirect()->route('categorias.index')
+                         ->with('success', 'Categoría actualizada con éxito.');
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Categoria  $categoria
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(Beneficiario $beneficiario) // Inyección de dependencia del modelo
+    public function destroy(Categoria $categoria)
     {
-        $beneficiario->delete();
-        return response()->json(null, 204); // Código 204 para eliminación exitosa (sin contenido)
+        $categoria->delete();
+
+        return redirect()->route('categorias.index')
+                         ->with('success', 'Categoría eliminada con éxito.');
     }
 }
