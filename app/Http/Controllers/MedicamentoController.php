@@ -2,77 +2,124 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Medicamento; // Importa el modelo Medicamento
+use App\Models\Medicamento;
+use App\Models\Categoria;
+use App\Models\Insumo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class MedicamentoController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $medicamentos = Medicamento::with('categoria')->get(); // Carga la relación con la categoría
-        return response()->json($medicamentos);
+        $medicamentos = Medicamento::with(['categoria', 'insumo'])->get(); // Obtener todos los medicamentos con sus relaciones
+        return view('medicamentos.index', compact('medicamentos')); // Pasar a la vista
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $categorias = Categoria::all(); // Obtener todas las categorías para el formulario
+        $insumos = Insumo::all(); // Obtener todos los insumos para el formulario
+        return view('medicamentos.create', compact('categorias', 'insumos')); // Mostrar formulario de creación
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ID_Categoria' => 'required|exists:categorias,id', // Asegura que la categoría exista
+        // Validar los datos del formulario
+        $request->validate([
+            'categoria_id' => 'required|exists:categorias,id',
+            'insumo_id' => 'required|exists:insumos,id',
             'Nombre' => 'required|string|max:255',
-            'Descripcion' => 'nullable|string',
-            'Fecha_Vencimiento' => 'nullable|date',
-            'Cantidad' => 'required|integer|min:0',
+            'Laboratorio' => 'required|string|max:255',
+            'Componente' => 'required|string|max:255',
+            'Existencia' => 'required|string',
+            'imagen' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Crear el nuevo medicamento
+        Medicamento::create($request->all());
 
-        $medicamento = Medicamento::create($validator->validated());
-        return response()->json($medicamento, 201); // Código 201 para creación exitosa
+        return redirect()->route('medicamentos.index')
+                         ->with('success', 'Medicamento creado con éxito.');
     }
 
     /**
      * Display the specified resource.
+     *
+     * @param  \App\Models\Medicamento  $medicamento
+     * @return \Illuminate\Http\Response
      */
     public function show(Medicamento $medicamento)
     {
-        return response()->json($medicamento);
+        return view('medicamentos.show', compact('medicamento')); // Mostrar detalles del medicamento
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Medicamento  $medicamento
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Medicamento $medicamento)
+    {
+        $categorias = Categoria::all(); // Obtener todas las categorías para el formulario de edición
+        $insumos = Insumo::all(); // Obtener todos los insumos para el formulario de edición
+        return view('medicamentos.edit', compact('medicamento', 'categorias', 'insumos')); // Mostrar formulario de edición
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Medicamento  $medicamento
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Medicamento $medicamento)
     {
-        $validator = Validator::make($request->all(), [
-            'ID_Categoria' => 'exists:categorias,id', // Asegura que la categoría exista
-            'Nombre' => 'string|max:255',
-            'Descripcion' => 'nullable|string',
-            'Fecha_Vencimiento' => 'nullable|date',
-            'Cantidad' => 'integer|min:0',
+        // Validar los datos del formulario
+        $request->validate([
+            'categoria_id' => 'required|exists:categorias,id',
+            'insumo_id' => 'required|exists:insumos,id',
+            'Nombre' => 'required|string|max:255',
+            'Laboratorio' => 'required|string|max:255',
+            'Componente' => 'required|string|max:255',
+            'Existencia' => 'required|string',
+            'imagen' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Actualizar el medicamento existente
+        $medicamento->update($request->all());
 
-        $medicamento->update($validator->validated());
-        return response()->json($medicamento);
+        return redirect()->route('medicamentos.index')
+                         ->with('success', 'Medicamento actualizado con éxito.');
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Medicamento  $medicamento
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Medicamento $medicamento)
     {
         $medicamento->delete();
-        return response()->json(null, 204); // Código 204 para eliminación exitosa (sin contenido)
+
+        return redirect()->route('medicamentos.index')
+                         ->with('success', 'Medicamento eliminado con éxito.');
     }
 }
