@@ -10,15 +10,14 @@ class Donacion extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ID_Benefactor',
+        'benefactor_id',
         'Fecha_Donacion',
         'Descripcion',
     ];
 
-    // Definir la relación con el Benefactor
+    // Definir la relación con Benefactor
     public function benefactor()
     {
-        return $this->belongsTo(Benefactor::class, 'ID_Benefactor', 'ID_Benefactor');
+        return $this->belongsTo(Benefactor::class);
     }
 }
-

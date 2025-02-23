@@ -4,16 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Beneficiario extends Model
+class Role extends SpatieRole
 {
     use HasFactory;
 
+    protected $table = 'roles';
+
     protected $fillable = [
-        'Nombre',
-        'Cedula',
-        'Direccion',
-        'Telefono',
-        'Informe_Medico',
+        'name' 
     ];
 }

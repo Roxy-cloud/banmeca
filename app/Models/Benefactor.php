@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Benefactor extends Model
 {
+    /** @use HasFactory<\Database\Factories\BenefactorFactory> */
     use HasFactory;
+    protected $table = 'benefactors';
 
     protected $fillable = [
         'Nombre',
@@ -17,4 +19,10 @@ class Benefactor extends Model
         'Telefono',
         'Correo_Electronico',
     ];
+    
+    //relacion: un benefactor puede hacer de una a muchas donaciones
+    public function donacions()
+    {
+    return $this->hasMany(Donacion::class, 'benefactor_id');
+    }
 }

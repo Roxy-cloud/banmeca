@@ -10,15 +10,24 @@ class Medicamento extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ID_Categoria',
+        'categoria_id',
+        'insumo_id',
         'Nombre',
-        'Descripcion',
-        'Fecha_Vencimiento',
-        'Cantidad',
+        'Laboratorio',
+        'Componente',
+        'Existencia',
+        'imagen',
     ];
 
-    public function donacion()
+    // Definir la relación con Categoria
+    public function categoria()
     {
-        return $this->belongsTo(Donacion::class, 'ID_Donacion', 'ID_Donacion');
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+    }
+
+    // Definir la relación con Insumo
+    public function insumo()
+    {
+        return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 }
