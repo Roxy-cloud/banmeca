@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SedeCaritasParroquial extends Model
+class SedeParroquial extends Model
 {
     /** @use HasFactory<\Database\Factories\SedeParroquialFactory> */
     use HasFactory;
@@ -21,6 +21,6 @@ class SedeCaritasParroquial extends Model
 
     public function sedeRegional()
     {
-    return $this->belongsTo(SedeRegional::class, 'sederegional_id');
+    return $this->belongsTo(SedeRegional::class, 'SedeRegional_id');
     }
 }
