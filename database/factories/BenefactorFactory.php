@@ -19,7 +19,7 @@ class BenefactorFactory extends Factory
             'RIF_Cedula' => $this->faker->unique()->numerify('V-########'),
             'Direccion' => $this->faker->address,
             'Telefono' => $this->faker->phoneNumber,
-            'Correo_Electronico' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->safeEmail,
         ];
     }
 }

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Insumo;
-use App\Models\Donacion;
+use App\Models\Benefactor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InsumoFactory extends Factory
@@ -23,9 +23,10 @@ class InsumoFactory extends Factory
     public function definition()
     {
         return [
-            'donacions_id' => Donacion::factory(), // Crear un donación asociada
-            'Nombre_Insumo' => $this->faker->word, // Generar un nombre aleatorio para el insumo
+
+            'insumo_id' => Benefactor::factory(), // Crear un benefactor asociado
             'Tipo_Insumo' => $this->faker->randomElement(['Medicamento', 'Equipo Médico']), // Tipo aleatorio
+            'Fecha_Insumo' => $this->faker->dateTime(),  
         ];
     }
 }
