@@ -5,27 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class Insumo extends Model
 {
     use HasFactory;
+    protected $table = 'insumos';
 
     protected $fillable = [
-        'donacions_id',
-        'Nombre_Insumo',
+        'benefactor_id',
+        'Fecha_Insumo',
         'Tipo_Insumo',
     ];
-    public function medicamentos()
+
+    public function benefactor()
     {
-        return $this->hasMany(Medicamento::class);
+        return $this->belongsTo(Benefactor::class);
     }
 
-    public function equiposMedicos()
+    public function medicamento()
     {
-        return $this->hasMany(EquipoMedico::class);
+        return $this->belongsTo(Medicamento::class, 'medicamento_id');
     }
-    // Definir la relación con Donacion
-    public function donacion()
+
+    public function equipment()
     {
-        return $this->belongsTo(Donacion::class, 'donacions_id');
+        return $this->belongsTo(Equipment::class, 'equipment_id');
     }
 }

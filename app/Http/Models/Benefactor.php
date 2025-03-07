@@ -17,12 +17,13 @@ class Benefactor extends Model
         'RIF_Cedula',
         'Direccion',
         'Telefono',
-        'Correo_Electronico',
+        'email',
     ];
     
-    //relacion: un benefactor puede hacer de una a muchas donaciones
-    public function donacions()
+    //relacion: un benefactor puede hacer de una a muchas insumo
+
+    public function insumo()
     {
-    return $this->hasMany(Donacion::class, 'benefactor_id');
+        return $this->hasMany(Insumo::class, 'benefactor_id', 'id');
     }
 }

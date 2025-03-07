@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Solicitud extends Model
 {
-    /** @use HasFactory<\Database\Factories\SolicitudFactory> */
     use HasFactory;
+    protected $table = 'solicitudes';
+
+    protected $fillable = [
+        'beneficiario_id',
+        'tipo',
+        'categoria',
+        'descripcion',
+    ];
+
+    // Relación con Beneficiario
+    public function beneficiario()
+    {
+        return $this->belongsTo(Beneficiario::class);
+    }
 }
+
