@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('RIF_Cedula')->unique(); // Identificación del benefactor
             $table->string('Direccion')->nullable(); // Dirección
             $table->string('Telefono')->nullable(); // Teléfono
-            $table->string('Correo_Electronico')->nullable(); // Correo Electrónico
+            $table->string('email')->nullable(); // Correo Electrónico
             $table->timestamps();
         });
     }

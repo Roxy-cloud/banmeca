@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('insumos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('donacions_id'); // Clave Foránea
-            $table->string('Nombre_Insumo');
+            $table->unsignedBigInteger('benefactor_id'); // Clave Foránea
             $table->enum('Tipo_Insumo', ['Medicamento', 'Equipo Médico']);
-            $table->foreign('donacions_id')->references('id')->on('donacions')->onDelete('cascade');
+            $table->dateTime('Fecha_Insumo'); // Fecha de la Donación
+            $table->foreign('benefactor_id')->references('id')->on('benefactors')->onDelete('cascade');
             $table->timestamps();
         });
     }

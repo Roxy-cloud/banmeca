@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('medicamentos', function (Blueprint $table) {
+        Schema::create('equipments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('categoria_id'); // Clave Foránea
             $table->unsignedBigInteger('insumo_id'); // Clave Foránea
-            $table->string('Nombre');
-            $table->string('Laboratorio');
-            $table->string('Componente');
-            $table->string('Existencia');
-            $table->date('Fecha_Vencimiento');
+            $table->string('Tipo'); // Tipo de equipo (Silla de ruedas, muleta, bastón, etc.)
+            $table->string('Marca'); // Marca del equipo
+            $table->string('Modelo'); // Modelo del equipo
+            $table->string('Existencia'); // existencia
             $table->string('imagen')->default('parring.png'); // Imagen por defecto
-            $table->foreign('categoria_id')->references('id')->on('categorias')->onDelete('cascade');
+            $table->enum('Estado', ['Bueno', 'Regular', 'Malo']); // Estado del equipo
             $table->foreign('insumo_id')->references('id')->on('insumos')->onDelete('cascade');
             $table->timestamps();
         });
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('medicamentos');
+        Schema::dropIfExists('equipo_medicos');
     }
 };
