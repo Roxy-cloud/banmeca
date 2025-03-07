@@ -4,23 +4,27 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BenefactorController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\DonacionController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\MedicamentoController;
-use App\Http\Controllers\EquipoMedicoController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SedeRegionalController;
 use App\Http\Controllers\SedeParroquialController;
+use App\Http\Controllers\SolicitudController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Rutas para los recursos: beneficiarios, benefactores, categorias, donaciones, insumos, medicamentos
-Route::resource('beneficiarios', BeneficiarioController::class);
-Route::resource('benefactors', BenefactorController::class);
-Route::resource('categorias', CategoriaController::class);
-Route::resource('donaciones', DonacionController::class);
-Route::resource('insumos', InsumoController::class);
-Route::resource('medicamentos', MedicamentoController::class);
-Route::resource('equipoMedico', EquipoMedicoController::class);
+// Rutas para los recursos: beneficiarios, benefactores, categorias, insumo, medicamentos
+Route::resource('admin/beneficiarios', BeneficiarioController::class);
+Route::resource('admin/benefactors', BenefactorController::class);
+Route::resource('admin/categorias', CategoriaController::class);
+Route::resource('admin/insumos', InsumoController::class);
+Route::resource('admin/medicamentos', MedicamentoController::class);
+Route::resource('admin/equipments', EquipmentController::class);
+Route::resource('admin/sede_parroquial', SedeParroquialController::class);
+Route::resource('admin/sede_regional', SedeRegionalController::class);
+Route::resource('admin/solicitudes', SolicitudController::class);
+Route::get('admin/profile', [ProfileController::class, 'profile'])->name('profile');
 
 
 
@@ -51,17 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
 });
 
 // Otras rutas que necesites agregar
-    Route::resource('admin/beneficiarios', BeneficiarioController::class);
-    Route::resource('admin/benefactors', BenefactorController::class);
-    Route::resource('admin/categorias', CategoriaController::class);
-    Route::resource('admin/donations', DonacionController::class);
-    Route::resource('admin/equipments', EquipoMedicoController::class);
-    Route::resource('admin/insumos', InsumoController::class);
-    Route::resource('admin/medicamentos', MedicamentoController::class);
-    Route::resource('admin/sede_parroquial', SedeParroquialController::class);
-    Route::resource('admin/sede_regional', SedeRegionalController::class);
-    Route::resource('admin/solicitudes', SolicitudesController::class);
+
 require __DIR__.'/auth.php';
