@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\Benefactor;
 use App\Models\Insumo;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,9 @@ class EquipmentController extends Controller
     public function create()
     {
         $insumos = Insumo::all(); // Obtener todos los insumos para el formulario
-        return view('admin.equipments.create', compact('insumos')); // Mostrar formulario de creación
+        $benefactors = Benefactor::all(); // Obtener todos los benefactores para el formulario
+        return view('admin.equipments.create', compact('insumos', 'benefactors')); // Correcto
+
     }
 
     /**
@@ -38,24 +41,37 @@ class EquipmentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
+        // Validación de los datos
         $request->validate([
-            'insumo_id' => 'required|exists:insumos,id',
-            'Tipo' => 'required|string|max:255',
-            'Marca' => 'required|string|max:255',
+            'benefactor_id' => 'required|exists:benefactors,id',
+            'Tipo' => 'required|string',
+            'Marca' => 'required|string',
             'Modelo' => 'required|string',
             'Existencia' => 'required|string',
             'Estado' => 'required|in:Bueno,Regular,Malo',
-            'imagen' => 'nullable|string',
         ]);
+     
+        // Registro del equipo
+        $equipo = new Equipment();
+        $equipo->insumo_id = $request->insumo_id;
+        $equipo->benefactor_id = $request->benefactor_id;
+        $equipo->Fecha_Donacion = $request->Fecha_Donacion;
+        $equipo->Tipo = $request->Tipo;
+        $equipo->Marca = $request->Marca;
+        $equipo->Modelo = $request->Modelo;
+        $equipo->Existencia = $request->Existencia;
+        $equipo->Estado = $request->Estado;
+    
+        // Configurar imagen predeterminada si no se proporciona una
+        $equipo->imagen = $request->imagen ?? asset('assets/img/storage/equipment/equipment.jpg'); // Usar `asset` para mayor flexibilidad.
+    
+        $equipo->save();
+    
+        return redirect()->route('equipments.index')->with('success', 'Equipo actualizado exitosamente.');
 
-        // Crear el nuevo equipment
-        Equipment::create($request->all());
-
-        return redirect()->route('admin.equipments.index')
-                         ->with('success', 'Equipo Medico creado con éxito.');
     }
-
+ 
+    
     /**
      * Display the specified resource.
      *
@@ -86,25 +102,44 @@ class EquipmentController extends Controller
      * @param  \App\Models\Equipment  $equipment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Equipment $equipment)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-            'insumo_id' => 'required|exists:insumos,id',
-            'Tipo' => 'required|string|max:255',
-            'Marca' => 'required|string|max:255',
-            'Modelo' => 'required|string',
-            'Existencia' => 'required|string',
-            'Estado' => 'required|in:Bueno,Regular,Malo',
-            'imagen' => 'nullable|string',
-        ]);
+    public function update(Request $request, $id)
+{
+    // Buscar el equipo por su ID
+    $equipo = Equipment::findOrFail($id);
+ 
+    // Validar los datos proporcionados por el usuario
+    $request->validate([
+        'Tipo' => 'string|nullable',
+        'Marca' => 'string|nullable',
+        'Modelo' => 'string|nullable',
+        'Existencia' => 'string|nullable',
+        'Estado' => 'in:Bueno,Regular,Malo|nullable',
+        'imagen' => 'file|image|nullable', // Validar que sea una imagen si se proporciona
+    ]);
 
-        // Actualizar el equipment existente
-        $equipment->update($request->all());
+    // Actualizar los campos proporcionados
+    $equipo->Tipo = $request->Tipo ?? $equipo->Tipo;
+    $equipo->Marca = $request->Marca ?? $equipo->Marca;
+    $equipo->Modelo = $request->Modelo ?? $equipo->Modelo;
+    $equipo->Existencia = $request->Existencia ?? $equipo->Existencia;
+    $equipo->Estado = $request->Estado ?? $equipo->Estado;
 
-        return redirect()->route('admin.equipments.index')
-                         ->with('success', 'Equipo Medico actualizado con éxito.');
+    // Manejar la actualización de la imagen
+    if ($request->hasFile('imagen')) {
+        // Ruta donde guardarás las imágenes (ajústala según tu estructura de almacenamiento)
+        $path = $request->file('imagen')->store('assets/img/storage/equipment');
+
+        // Actualizar la imagen del equipo con la nueva ruta
+        $equipo->imagen = $path;
     }
+
+    // Guardar los cambios en la base de datos
+    $equipo->save();
+
+    return redirect()->route('equipments.index')->with('success', 'Equipo actualizado exitosamente.');
+}
+
+    
 
     /**
      * Remove the specified resource from storage.
@@ -116,7 +151,7 @@ class EquipmentController extends Controller
     {
         $equipment->delete();
 
-        return redirect()->route('admin.equipments.index')
+        return redirect()->route('equipments.index')
                          ->with('success', 'Equipo Medico eliminado con éxito.');
     }
 }

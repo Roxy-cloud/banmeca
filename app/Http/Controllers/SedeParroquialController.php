@@ -3,111 +3,106 @@
 namespace App\Http\Controllers;
 
 use App\Models\SedeParroquial;
+use App\Models\SedeRegional;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 
 class SedeParroquialController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $sedeParroquials = SedeParroquial::all(); // Obtener todos los SedeParroquials
-        return view('sede_parroquials.index', compact('sedeParroquials')); // Pasar a la vista
+        // Cargar las sedes parroquiales con la relación del responsable
+        $sedeParroquiales = SedeParroquial::with('responsable')->get();
+        return view('admin.sede_parroquial.index', compact('sedeParroquiales'));
     }
+    
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+        private function obtenerResponsables()
+        {
+            $role = Role::where('name', 'responsable_parroquial')->first();
+        
+            return $role ? $role->users : collect();
+        }
+    
+        public function create()
+        {
+            $role = Role::where('name', 'responsable_parroquial')->first(); // Definir el rol
+            
+                if (!$role) {
+                    return redirect()->back()->with('error', 'El rol responsable parroquial no existe.');
+                }
+            $responsables = $role->users;
+            $sedesRegionales = SedeRegional::all();
+        
+            return view('admin.sede_parroquial.create', compact('responsables', 'sedesRegionales'));
+        }
+
+        public function store(Request $request)
+        {
+            $validatedData = $request->validate([
+                'SedeRegional_id' => 'required|exists:sede_regional,id',
+                'Nombre' => 'required|string|max:255',
+                'Direccion' => 'required|string|max:255',
+                'user_id' => 'required|exists:users,id',
+                'telefono' => 'required|string|max:15', // Validar el campo teléfono
+
+            ]);
+        
+            SedeParroquial::create($validatedData);
+        
+            return redirect()->route('sede_parroquial.index')->with('success', 'Sede parroquial creada exitosamente.');
+        }
+        
+    
+
+    public function edit($id)
     {
-        return view('sede_parroquials.create'); // Mostrar formulario de creación
+        $role = Role::where('name', 'responsable_parroquial')->first(); // Definir el rol
+    
+        if (!$role) {
+            return redirect()->back()->with('error', 'El rol responsable parroquial no existe.');
+        }
+    
+        $responsables = $role->users;
+        $sedeParroquial = SedeParroquial::findOrFail($id);
+        $sedesRegionales = SedeRegional::all();
+    
+        return view('admin.sede_parroquial.edit', compact('sedeParroquial', 'responsables', 'sedesRegionales'));
     }
+    
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function update(Request $request, $id)
+{
+    // Validación de datos
+    $validatedData = $request->validate([
+        'sedeRegional_id' => 'required|exists:sede_regional,id',
+        'Nombre' => 'required|string|max:255',
+        'Direccion' => 'required|string|max:255',
+        'user_id' => 'required|exists:users,id', // Campo relacionado con el usuario responsable
+        'telefono' => 'required|string|max:15',
+    ]);
+
+    // Buscar el registro existente y actualizar los datos
+    $sedeParroquial = SedeParroquial::findOrFail($id);
+    $sedeParroquial->fill($validatedData); // Actualizar los datos del registro
+    $sedeParroquial->user_id = $validatedData['user_id']; // Actualizar el responsable
+    $sedeParroquial->save();
+
+    // Redirigir con mensaje de éxito
+    return redirect()->route('sede_parroquial.index')->with('success', 'Sede parroquial actualizada exitosamente.');
+}
+
+public function show(SedeParroquial $sedeParroquial)
+{
+    return view('admin.sede_parroquial.show', compact('sedeParroquial')); // Mostrar detalles de la sede parroquial
+}
+
+    public function destroy($id)
     {
-        // Validar los datos del formulario
-        $request->validate([
-            'Nombre' => 'required|string|max:255',
-            'Direccion' => 'required|string|max:255',
-            'Responsable' => 'required|string|max:255',
-            'Telefono' => 'required|string|max:20',
-        ]);
-
-        // Crear el nuevo SedeParroquial
-        SedeParroquial::create($request->all());
-
-        return redirect()->route('sede_parroquials.index')
-                         ->with('success', 'Sede Parroquial creado con éxito.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\SedeParroquial $sedeParroquial
-     * @return \Illuminate\Http\Response
-     */
-    public function show(SedeParroquial $sedeParroquial)
-    {
-        return view('sede_parroquial.show', compact('sedeParroquial')); // Mostrar detalles del SedeParroquial
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SedeParroquial  $sedeParroquial
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SedeParroquial $sedeParroquial)
-    {
-        return view('sede_parroquial.edit', compact('sedeParroquial')); // Mostrar formulario de edición
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SedeParroquial  $sedeParroquial
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, SedeParroquial $sedeParroquial)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-          'Nombre' => 'required|string|max:255',
-            'Direccion' => 'required|string|max:255',
-            'Responsable' => 'required|string|max:255',
-            'Telefono' => 'required|string|max:20',
-        ]);
-
-        // Actualizar el SedeParroquial
-        $sedeParroquial->update($request->all());
-
-        return redirect()->route('sede_parroquial.index')
-                         ->with('success', 'Sede Parroquial actualizado con éxito.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\SedeParroquial  $sedeParroquial
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SedeParroquial $sedeParroquial)
-    {
+        $sedeParroquial = SedeParroquial::findOrFail($id);
         $sedeParroquial->delete();
 
-        return redirect()->route('sede_parroquial.index')
-                         ->with('success', 'Sede Parroquial eliminado con éxito.');
+        return redirect()->route('sede_parroquial.index')->with('success', 'Sede parroquial eliminada exitosamente.');
     }
 }

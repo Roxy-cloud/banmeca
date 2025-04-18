@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Beneficiario;
 use Illuminate\Http\Request;
+use App\Http\Requests\BeneficiarioRequest;
 
 class BeneficiarioController extends Controller
 {
@@ -34,23 +35,27 @@ class BeneficiarioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-            'Nombre' => 'required|string|max:255',
-            'Cedula' => 'required|string|unique:beneficiarios|max:20',
-            'Direccion' => 'required|string|max:255',
-            'Telefono' => 'required|string|max:20',
-            'Informe_Medico' => 'nullable|string',
-        ]);
-
-        // Crear el nuevo beneficiario
-        Beneficiario::create($request->all());
-
-        return redirect()->route('beneficiarios.index')
-                         ->with('success', 'Beneficiario creado con éxito.');
+    public function store(BeneficiarioRequest $request)
+{
+    if ($request->hasFile('Informe_Medico')) {
+        $request->merge(['Informe_Medico' => $request->file('Informe_Medico')->store('informes_medicos')]);
     }
+    $validated = $request->validate([
+        'Nombre' => 'required',
+        'Cedula' => 'required|unique:beneficiarios',
+        'Direccion' => 'required',
+        'Telefono' => 'required',
+        'Informe_Medico' => 'nullable|mimes:pdf,jpg,png|max:2048'
+    ]);
+
+    if ($request->hasFile('Informe_Medico')) {
+        $validated['Informe_Medico'] = $request->file('Informe_Medico')->store('informes_medicos');
+    }
+
+    Beneficiario::create($request->validated());
+    return redirect()->route('beneficiarios.create')->with('success', 'Beneficiario registrado');
+}
+
 
     /**
      * Display the specified resource.

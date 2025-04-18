@@ -1,21 +1,47 @@
 <?php
-
 namespace App\Http\Controllers;
+use App\Models\Solicitud;
+use App\Models\SeguimientoSolicitud;
+use App\Models\Equipment;
+use App\Models\Medicamento;
+use App\Models\Beneficiario;
+use App\Models\Insumo;
 
-use App\Models\Donation;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        $today_donations = Donation::whereDate('created_at', today())->sum('amount'); // Total donaciones hoy
-        $total_categories = Category::count(); // Total categorías disponibles
-        $total_expired_products = Product::where('expiry_date', '<', now())->count(); // Total productos expirados
-        
-        // Suponiendo que tienes un gráfico pie configurado
-        $pieChart = $this->generatePieChart(); 
+public function index()
+{
+    $solicitudesTotales = Solicitud::count();
+    $solicitudesPorEstado = SeguimientoSolicitud::select('estado')
+        ->groupBy('estado')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            return [$item->estado => $item->count()];
+        });
 
-        return view('admin.dashboard', compact('today_donations', 'total_categories', 'total_expired_products', 'pieChart'));
-    }
+    $solicitudesPorTipo = Solicitud::select('Tipo')
+        ->groupBy('tipo')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            return [$item->tipo => $item->count()];
+        });
+
+    return view('dashboard', compact(
+        'solicitudesTotales',
+        'solicitudesPorEstado',
+        'solicitudesPorTipo',
+        'equiposPorTipo'
+    ));
+
+    $equiposPorTipo = Equipment::select('Tipo')
+    ->groupBy('Tipo')
+    ->get()
+    ->mapWithKeys(function ($item) {
+        $disponibles = $item->equipos()->where('Estado', 'Bueno')->count();
+        $enUso = $item->equipos()->where('Estado', 'Regular')->count();
+        return [$item->Tipo => compact('disponibles', 'en_uso')];
+    });
+
+}
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Medicamento;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class CategoriaController extends Controller
     public function index()
     {
         $categorias = Categoria::all(); // Obtener todas las categorías
-        return view('categorias.index', compact('categorias')); // Pasar a la vista
+        return view('admin.categorias.index', compact('categorias')); // Pasar a la vista
     }
 
     /**
@@ -25,7 +25,7 @@ class CategoriaController extends Controller
      */
     public function create()
     {
-        return view('categorias.create'); // Mostrar formulario de creación
+        return view('admin.categorias.create'); // Mostrar formulario de creación
     }
 
     /**
@@ -57,7 +57,7 @@ class CategoriaController extends Controller
      */
     public function show(Categoria $categoria)
     {
-        return view('categorias.show', compact('categoria')); // Mostrar detalles de la categoría
+        return view('admin.categorias.show', compact('categoria')); // Mostrar detalles de la categoría
     }
 
     /**
@@ -68,7 +68,7 @@ class CategoriaController extends Controller
      */
     public function edit(Categoria $categoria)
     {
-        return view('categorias.edit', compact('categoria')); // Mostrar formulario de edición
+        return view('admin.categorias.edit', compact('categoria')); // Mostrar formulario de edición
     }
 
     /**

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Insumo;
-use App\Models\Donacion;
+use App\Models\Medicamento;
+use App\Models\Benefactor;
 use Illuminate\Http\Request;
 
 class InsumoController extends Controller
@@ -14,11 +15,11 @@ class InsumoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $insumos = Insumo::with('donacion')->get(); // Obtener todos los insumos con sus donaciones
-        return view('insumos.index', compact('insumos')); // Pasar a la vista
-    }
+{
+    $insumos = Insumo::with(['medicamentos', 'equipments'])->get();
 
+    return view('admin.insumos.index', compact('insumos'));
+}
     /**
      * Show the form for creating a new resource.
      *
@@ -26,8 +27,8 @@ class InsumoController extends Controller
      */
     public function create()
     {
-        $donaciones = Donacion::all(); // Obtener todas las donaciones para el formulario
-        return view('insumos.create', compact('donaciones')); // Mostrar formulario de creación
+        $insumo = Benefactor::all(); // Obtener todas las insumo para el formulario
+        return view('insumos.create', compact('insumo')); // Mostrar formulario de creación
     }
 
     /**
@@ -40,9 +41,11 @@ class InsumoController extends Controller
     {
         // Validar los datos del formulario
         $request->validate([
-            'donacions_id' => 'required|exists:donacions,id',
-            'Nombre_Insumo' => 'required|string|max:255',
-            'Tipo_Insumo' => 'required|in:Medicamento,Equipo Médico',
+            'insumo_id' => 'required|exists:insumo,id',
+            'benefactor_id' => 'required|exists:benefactor,id',
+            'Tipo_Insumo' => 'required|in:Medicamento,Equipment',
+            'Nombre' => 'required|exists:medicamento, id',
+            'Tipo' => 'required|exists:equipment, id',
         ]);
 
         // Crear el nuevo insumo
@@ -60,7 +63,8 @@ class InsumoController extends Controller
      */
     public function show(Insumo $insumo)
     {
-        return view('insumos.show', compact('insumo')); // Mostrar detalles del insumo
+
+        return view('admin.insumos.show', compact('insumo')); // Mostrar detalles del insumo
     }
 
     /**
@@ -71,8 +75,8 @@ class InsumoController extends Controller
      */
     public function edit(Insumo $insumo)
     {
-        $donaciones = Donacion::all(); // Obtener todas las donaciones para el formulario de edición
-        return view('insumos.edit', compact('insumo', 'donaciones')); // Mostrar formulario de edición
+        $insumo = Benefactor::all(); // Obtener todas las insumo para el formulario de edición
+        return view('insumos.edit', compact('insumo')); // Mostrar formulario de edición
     }
 
     /**
@@ -86,7 +90,8 @@ class InsumoController extends Controller
     {
         // Validar los datos del formulario
         $request->validate([
-            'donacions_id' => 'required|exists:donacions,id',
+            'insumo_id' => 'required|exists:insumo,id',
+            'benefactor_id' => 'required|exists:benefactor,id',
             'Nombre_Insumo' => 'required|string|max:255',
             'Tipo_Insumo' => 'required|in:Medicamento,Equipo Médico',
         ]);

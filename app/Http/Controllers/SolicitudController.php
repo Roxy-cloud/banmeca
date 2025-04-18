@@ -2,41 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Insumo;
-use App\Models\Medicamento;
-use App\Models\EquipoMedico;
+use App\Models\Solicitud;
 use App\Models\Beneficiario;
-use App\Models\Responsable;
+use App\Models\Medicamento;
+use App\Models\Equipment;
+use Illuminate\Http\Request;
+use App\Http\Requests\SolicitudRequest;
 
 class SolicitudController extends Controller
 {
+    public function index()
+    {
+        $beneficiarios = Beneficiario::all();
+        $medicamentos = Medicamento::all();
+        $equipments = Equipment::all();
+        $solicitudes = Solicitud::with('beneficiario')->get();
+    
+        return view('admin.solicitudes.index', compact('beneficiarios', 'solicitudes'));
+    }
+
+    
     public function create()
     {
         $beneficiarios = Beneficiario::all();
-        $responsables = Responsable::all();
+        $equipos = Equipment::all();
+        $medicamentos = Medicamento::all();
+        return view('admin.solicitudes.create', compact('beneficiarios', 'equipos', 'medicamentos'));
+    }
+    
+    public function store(SolicitudRequest $request)
+    {
+        $solicitud = Solicitud::create($request->validated());
+        
+        // Asignar equipos
+        if ($request->input('equipos')) {
+            $solicitud->equipos()->attach($request->input('equipos'));
+        }
+        
+        // Asignar medicamentos
+        if ($request->input('medicamentos')) {
+            $solicitud->medicamentos()->attach($request->input('medicamentos'));
+        }
+        
+        return redirect()->route('solicitudes.create')->with('success', 'Solicitud registrada');
+    }
+        
 
-        return view('solicitudes.create', compact('beneficiarios', 'medicamentos', 'equiposMedicos', 'responsables'));
+    public function show(Solicitud $solicitud)
+    {
+        return view('admin.solicitudes.show', compact('solicitud'));
     }
 
-    public function store(Request $request)
+    public function edit(Solicitud $solicitud)
     {
-        $solicitud = Insumo::create($request->only(['tipo', 'beneficiario_id', 'medicamento_id', 'equipomedico_id','responsable_id']));
+        $beneficiarios = Beneficiario::all();
+        return view('admin.solicitudes.edit', compact('solicitud', 'beneficiarios'));
+    }
 
-        if ($request->insumo_tipo == 'medicamento') {
-            Medicamento::create([
-                'nombre' => $request->medicamento_nombre,
-                'cantidad' => $request->medicamento_dosis,
-                'insumo_id' => $solicitud->id
-            ]);
-        } elseif ($request->insumo_tipo == 'equipo_medico') {
-            EquipoMedico::create([
-                'nombre' => $request->equipo_medico_nombre,
-                'descripcion' => $request->equipo_medico_descripcion,
-                'insumo_id' => $solicitud->id
-            ]);
-        }
+    public function update(Request $request, Solicitud $solicitud)
+    {
+        $request->validate([
+            'beneficiario_id' => 'required|exists:beneficiarios,id',
+            'tipo_solicitud' => 'required|in:comodato,donativo',
+            'Tipo' => 'required|in: equipments',
+            'categoria' => 'required|in:medicamentos',
+            'descripcion' => 'nullable|string',
+        ]);
 
-        return redirect()->route('Solicitud.index')->with('success', 'Solicitud enviada correctamente');
+        $solicitud->update($request->all());
+
+        return redirect()->route('admin.solicitudes.index')->with('success', 'Solicitud actualizada con éxito.');
+    }
+
+    public function destroy(Solicitud $solicitud)
+    {
+        $solicitud->delete();
+
+        return redirect()->route('admin.solicitudes.index')->with('success', 'Solicitud eliminada con éxito.');
     }
 }
