@@ -14,13 +14,16 @@ return new class extends Migration
         Schema::create('equipments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('insumo_id'); // Clave Foránea
+            $table->unsignedBigInteger('benefactor_id'); // Clave Foránea
+            $table->dateTime('Fecha_Donacion'); // Fecha de la Donación
             $table->string('Tipo'); // Tipo de equipo (Silla de ruedas, muleta, bastón, etc.)
             $table->string('Marca'); // Marca del equipo
             $table->string('Modelo'); // Modelo del equipo
             $table->string('Existencia'); // existencia
-            $table->string('imagen')->default('parring.png'); // Imagen por defecto
+            $table->string('imagen')->default('assets/img/storage/equipment/equipment.jpg'); // Imagen por defecto
             $table->enum('Estado', ['Bueno', 'Regular', 'Malo']); // Estado del equipo
             $table->foreign('insumo_id')->references('id')->on('insumos')->onDelete('cascade');
+            $table->foreign('benefactor_id')->references('id')->on('benefactors')->onDelete('cascade');
             $table->timestamps();
         });
     }
