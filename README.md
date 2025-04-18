@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# banmeca
-desarrollo de sistema para el Banco de Medicina de la Organizacion Caritas Venezuela
-=======
 
 Pasos para Cambiar la Política de Ejecución en PowerShell
 Abrir PowerShell como Administrador:
@@ -118,7 +114,7 @@ cree la cuenta de Supabase y Railway con mi Github
 voy a instalar Railway Cli con el siguiente comando: npm i -g @railway/cli
 luego me logueo desde el mismo terminal con railway login
 el ultimo comando es railway init para iniciar el proyecto. le doy el nombre: banmeca
-
+en railway, dentro de mi proyecto le doy a settings y busco shared variables
 ______________________________________________
 Entidades Clave
 Benefactor: Representa a quienes donan medicamentos, insumos o equipos.
@@ -335,4 +331,3 @@ Implementar validación de disponibilidad de equipos/medicamentos
 
 
 
->>>>>>> e2a8b4e (Primer commit)
