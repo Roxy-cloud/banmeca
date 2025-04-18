@@ -5,5 +5,9 @@
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>
+<<<<<<< HEAD
 	<strong>Oh snap!</strong> {{$error}}
+=======
+	<strong>Hay un problema!</strong> {{$error}}
+>>>>>>> e2a8b4e (Primer commit)
 </div>

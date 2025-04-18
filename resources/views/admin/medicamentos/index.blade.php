@@ -15,7 +15,11 @@
     <div class="card">
 			<div class="card-body">
 				<div class="table-responsive">
+<<<<<<< HEAD
                 <table id="insumos-table" class="datatable table table-hover table-center mb-0">
+=======
+                <table id="medicamentos-table" class="datatable table table-hover table-center mb-0">
+>>>>>>> e2a8b4e (Primer commit)
                     <thead>
                         <tr>
                             <th>Nombre</th>

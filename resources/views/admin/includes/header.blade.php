@@ -24,13 +24,21 @@
     <!-- Header Right Menu -->
     <ul class="nav user-menu">
         <!-- User Menu -->
+<<<<<<< HEAD
         <h4 class="page-title">Bienvenid@ {{auth()->user()->name}}!</h4>
+=======
+        <h6 class="page-title"><b><i>Bienvenid@ {{auth()->user()->name}}!</i></b></h6>
+>>>>>>> e2a8b4e (Primer commit)
         <li class="nav-item dropdown has-arrow">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                 <span class="user-img">
                     <img class="rounded-circle" 
                         src="{{  auth()->user()->avatar  }}" 
+<<<<<<< HEAD
                         width="31" 
+=======
+                        width="31"
+>>>>>>> e2a8b4e (Primer commit)
                         alt="">
                 </span>
             </a>
@@ -46,7 +54,15 @@
                     </div>
                 </div>
                 
+<<<<<<< HEAD
                 <a class="dropdown-item" href="{{route('profile')}}">Perfil</a>
+=======
+                <a class="dropdown-item" href="{{ route('profile.edit') }}">Editar Perfil</a>
+
+
+
+
+>>>>>>> e2a8b4e (Primer commit)
                 @can('view-settings')
                     <a class="dropdown-item" href="{{route('settings')}}">Configuracion</a>
                 @endcan

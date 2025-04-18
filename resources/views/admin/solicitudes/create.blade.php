@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
+<<<<<<< HEAD
 <div class="container">
     <h1>Registrar Beneficiario y Solicitud</h1>
 
@@ -92,3 +93,94 @@
 
 </script>
 
+=======
+
+<form method="POST" action="{{ route('solicitudes.store') }}" enctype="multipart/form-data">
+    @csrf
+    <div class="mb-3">
+        <label for="beneficiario_id" class="form-label">Beneficiario</label>
+        <select class="form-control" id="beneficiario_id" name="beneficiario_id" required>
+            <option value="">Seleccione un beneficiario</option>
+            @foreach($beneficiarios as $beneficiario)
+                <option value="{{ $beneficiario->id }}">{{ $beneficiario->Nombre }} ({{ $beneficiario->Cedula }})</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="categoria" class="form-label">Categoría</label>
+        <select class="form-control" id="categoria" name="categoria" required>
+            <option value="">Seleccione</option>
+            <option value="medicamento">Medicamentos</option>
+            <option value="equipments">Equipo médico</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="categoria" class="form-label">Tipo de solicitud</label>
+        <select class="form-control" id="categoria" name="categoria" required>
+        <option value="">Seleccione el tipo</option>
+            @if(old('categoria') == 'equipments')
+                <option value="comodato">Comodato</option>
+                <option value="donativo">Donativo</option>
+            @else
+                <option value="donativo">Donativo</option>
+            @endif
+        </select>
+    </div>
+   
+    <div id="medicamento_field" style="display: none;">
+        <label for="medicamento_id" class="form-label">Medicamento Solicitado</label>
+        <select class="form-control" id="medicamento_id" name="medicamento">
+            <option value="">Seleccione</option>
+            @foreach($medicamentos as $medicamento)
+                <option value="{{ $medicamento->id }}">{{ $medicamento->Nombre }} ({{ $medicamento->Laboratorio }})</option>
+            @endforeach
+        </select>
+    </div>
+    <div id="equipment_field" style="display: none;">
+        <label for="equipment_id" class="form-label">Equipo Solicitado</label>
+        <select class="form-control" id="equipment_id" name="equipmets">
+            <option value="">Seleccione</option>
+            @foreach($equipos as $equipment)
+                <option value="{{ $equipment->id }}">{{ $equipment->Tipo }} ({{ $equipment->Marca }})</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea class="form-control" name="descripcion"></textarea>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Hacer solicitud</button>
+    </div>
+</form>
+
+@endsection
+
+@push('page-js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoriaSelect = document.querySelector('select[name="categoria"]');
+    const medicamentoField = document.getElementById('medicamento_field');
+    const equipmentField = document.getElementById('equipment_field');
+  
+
+    categoriaSelect.addEventListener('change', function() {
+        if (this.value === 'medicamentos') {
+            medicamentoField.style.display = 'block';
+            equipmentField.style.display = 'none';
+        } else if (this.value === 'equipments') {
+            medicamentoField.style.display = 'none';
+            equipmentField.style.display = 'block';
+
+        } else {
+            medicamentoField.style.display = 'none';
+            equipmentField.style.display = 'none';
+        }
+    });
+});
+</script>
+
+@endpush
+
+>>>>>>> e2a8b4e (Primer commit)

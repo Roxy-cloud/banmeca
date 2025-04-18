@@ -4,6 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+<<<<<<< HEAD
+=======
+        <link rel="shortcut icon" type="image/x-icon" href="{{asset('assets/img/fav.png')}}">
+>>>>>>> e2a8b4e (Primer commit)
 
         <title>{{ config('app.name', 'Cáritas') }}</title>
 
@@ -15,6 +19,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
+<<<<<<< HEAD
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div>
                 <a href="/">
@@ -23,6 +28,16 @@
             </div>
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+=======
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0" style="background: linear-gradient(to bottom right,rgb(250, 247, 247),rgb(228, 213, 213),rgb(121, 19, 19));">
+            <div>
+                <a href="/">
+                <img src="{{ asset('assets/img/Isologo.png') }}" alt="" class="w-10">
+                </a>
+            </div>
+
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 shadow-md overflow-hidden sm:rounded-lg" style="background: radial-gradient(circle,rgb(255, 255, 255),rgba(121, 19, 19, 0.8), rgba(71, 5, 5, 0.76));">
+>>>>>>> e2a8b4e (Primer commit)
                 {{ $slot }}
             </div>
         </div>

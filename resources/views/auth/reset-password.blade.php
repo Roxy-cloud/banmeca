@@ -32,7 +32,11 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
+<<<<<<< HEAD
                 {{ __('Reset Password') }}
+=======
+                {{ __('Restablecer Contraseña') }}
+>>>>>>> e2a8b4e (Primer commit)
             </x-primary-button>
         </div>
     </form>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('layouts.app')
+=======
+@extends('admin.layouts.app')
+>>>>>>> e2a8b4e (Primer commit)
 
 @section('content')
 <div class="container">
@@ -10,7 +14,28 @@
                 <table id="solicitudes-table" class="datatable table table-hover table-center mb-0">
        <tr>
            <th>Fecha de Donación</th>
+<<<<<<< HEAD
            <td>{{ $insumo->Fecha_Donacion }}</td> 
+=======
+           <td>{{ $insumo->Fecha_Insumo }}</td> 
+       </tr>
+       <tr>
+           <th>Nombre:</th>
+           <td>
+
+                        @if ($insumo->Tipo_Insumo == 'Medicamento')
+                            {{ $insumo->Medicamentos?->nombre ?? 'No disponible' }}
+                        @elseif ($insumo->Tipo_Insumo == 'Equipment')
+                            {{ $insumo->equipments?->Tipo ?? 'No disponible' }}
+                            @if($insumo->equipment)
+                                <img src="{{ asset('storage/' . $insumo->equipment->imagen) }}" alt="Imagen del Equipo" width="50">
+                            @endif
+                        @else
+                            No disponible
+                        @endif
+                    </td> 
+ 
+>>>>>>> e2a8b4e (Primer commit)
        </tr>
        <tr>
 

@@ -16,15 +16,24 @@
                 </a>
 
                     <div class="dash-count">
+<<<<<<< HEAD
                     @isset($today_insumo)
                         <h3>{{ $today_insumo }}</h3>
+=======
+                    @isset($solicitudesTotales)
+                    <h2 class="card-text">{{ $solicitudesTotales }}</h2>
+>>>>>>> e2a8b4e (Primer commit)
                         @else
                            <h6><p>No hay datos para mostrar.</p></h6> 
                     @endisset
                     </div>
                 </div>
                 <div class="dash-widget-info">
+<<<<<<< HEAD
                     <h6 class="text-muted">insumo de Hoy</h6>
+=======
+                    <h6 class="text-muted">Total de Solicitudes</h6>
+>>>>>>> e2a8b4e (Primer commit)
                 </div>
             </div>
         </div>
@@ -39,8 +48,13 @@
                 </a>
 
                     <div class="dash-count">
+<<<<<<< HEAD
                     @isset($total_categories)
                             <h3>{{ $total_categories }}</h3>
+=======
+                    @isset($solicitudesPorEstado)
+                            <h3>{{ $solicitudesPorEstado }}</h3>
+>>>>>>> e2a8b4e (Primer commit)
                         @else
                         <h6><p>No hay datos para mostrar.</p></h6> 
                         @endisset
@@ -48,7 +62,11 @@
                     </div>
                 </div>
                 <div class="dash-widget-info">
+<<<<<<< HEAD
                     <h6 class="text-muted">Categorías Disponibles</h6>
+=======
+                    <h6 class="text-muted">Solicitudes por Estado</h6>
+>>>>>>> e2a8b4e (Primer commit)
                 </div>
             </div>
         </div>
@@ -64,8 +82,13 @@
                 </a>
 
                     <div class="dash-count">
+<<<<<<< HEAD
                     @isset($total_expired_medicines)
                             <h3>{{ $total_expired_medicines }}</h3>
+=======
+                    @isset($solicitudesPorTipo)
+                            <h3>{{ $solicitudesPorTipo }}</h3>
+>>>>>>> e2a8b4e (Primer commit)
                         @else
                         <h6><p>No hay datos para mostrar.</p></h6> 
                         @endisset
@@ -73,7 +96,11 @@
                     </div>
                 </div>
                 <div class="dash-widget-info">
+<<<<<<< HEAD
                     <h6 class="text-muted">Medicinas Expiradas</h6>
+=======
+                    <h6 class="text-muted">Solicitudes por Tipo</h6>
+>>>>>>> e2a8b4e (Primer commit)
                 </div>
             </div>
         </div>
@@ -88,8 +115,13 @@
                 </a>
 
                     <div class="dash-count">
+<<<<<<< HEAD
                     @isset($total_users)
                             <h3>{{ $total_users }}</h3>
+=======
+                    @isset($equiposPorTipo)
+                            <h3>{{ $equiposPorTipo }}</h3>
+>>>>>>> e2a8b4e (Primer commit)
                         @else
                         <h6><p>No hay datos para mostrar.</p></h6> 
                         @endisset
@@ -97,13 +129,26 @@
                     </div>
                 </div>
                 <div class="dash-widget-info">
+<<<<<<< HEAD
                     <h6 class="text-muted">Usuarios del Sistema</h6>
+=======
+                    <h6 class="text-muted">Equipos por tipo</h6>
+>>>>>>> e2a8b4e (Primer commit)
                 </div>
             </div>
         </div>
     </div>
 </div>
     <!--- fin de cuarta card... --->
+<<<<<<< HEAD
+=======
+    <div class="row">
+    <div class="col-md-6">
+       
+    </div>
+</div>
+
+>>>>>>> e2a8b4e (Primer commit)
 <!-- Pie Chart -->
 <div class="card card-chart">
     <div class="card-header">

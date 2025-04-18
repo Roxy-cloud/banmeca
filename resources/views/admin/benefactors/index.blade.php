@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('layouts.app')
+=======
+@extends('admin.layouts.app')
+>>>>>>> e2a8b4e (Primer commit)
 
 @section('content')
     <h1>Lista de Benefactores</h1>
@@ -25,7 +29,11 @@
                     </tr>
                 </thead>
             <tbody>
+<<<<<<< HEAD
              @foreach ($benefactor as $benefactor)
+=======
+             @foreach ($benefactors as $benefactor)
+>>>>>>> e2a8b4e (Primer commit)
                 <tr>
                     <td>{{ $benefactor->Nombre }}</td>
                     <td>{{ $benefactor->Tipo }}</td>
@@ -37,7 +45,11 @@
                         <form action="{{ route('benefactors.destroy', $benefactor->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
+<<<<<<< HEAD
                             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este benefactor?')">Eliminar</button>
+=======
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este Registro?')">Eliminar</button>
+>>>>>>> e2a8b4e (Primer commit)
                         </form>
                     </td>
                     </tr>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('layouts.app')
+=======
+@extends('admin.layouts.app')
+>>>>>>> e2a8b4e (Primer commit)
 
 @section('content')
 <div class="container">
@@ -21,8 +25,13 @@
             <input type="text" class="form-control" id="Nombre" name="Nombre" required>
         </div>
         <div class="mb-3">
+<<<<<<< HEAD
             <label for="Rif_Cedula" class="form-label">Rif/Cédula</label>
             <input type="text" class="form-control" id="Rif_Cedula" name="Rif_Cedula" required>
+=======
+            <label for="RIF_Cedula" class="form-label">Rif/Cédula</label>
+            <input type="text" class="form-control" id="RIF_Cedula" name="RIF_Cedula" required>
+>>>>>>> e2a8b4e (Primer commit)
         </div>
         <div class="mb-3">
          <label for="Tipo" class="form-label">Tipo</label>
@@ -49,5 +58,10 @@
     </form>
 
     <a href="{{ route('benefactors.index') }}" class="btn btn-secondary mt-3">Volver a la lista</a>
+<<<<<<< HEAD
+=======
+    <a href="{{ route('insumos.create') }}" class="btn btn-secondary mt-3">Agregar Insumo</a>
+
+>>>>>>> e2a8b4e (Primer commit)
 </div>
 @endsection

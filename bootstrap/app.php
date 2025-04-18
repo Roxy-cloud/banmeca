@@ -3,16 +3,23 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Route;
+=======
+>>>>>>> e2a8b4e (Primer commit)
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+<<<<<<< HEAD
         api: __DIR__.'/../routes/api.php',
+=======
+>>>>>>> e2a8b4e (Primer commit)
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+<<<<<<< HEAD
         // Add global middleware (applied to all requests)
         $middleware->prepend([
             \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
@@ -38,3 +45,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Configure exception handling if needed
     })
     ->create();
+=======
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+>>>>>>> e2a8b4e (Primer commit)

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('layouts.app')
+=======
+@extends('admin.layouts.app')
+>>>>>>> e2a8b4e (Primer commit)
 
 @section('content')
 <div class="container">

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @extends('layouts.app')
+=======
+@extends('admin.layouts.app')
+>>>>>>> e2a8b4e (Primer commit)
 
 @section('content')
     <h1>Lista de Beneficiarios</h1>
@@ -36,7 +40,11 @@
                         <form action="{{ route('beneficiarios.destroy', $beneficiario->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
+<<<<<<< HEAD
                             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este beneficiario?')">Eliminar</button>
+=======
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este Registro?')">Eliminar</button>
+>>>>>>> e2a8b4e (Primer commit)
                         </form>
                     </td>
                 </tr>

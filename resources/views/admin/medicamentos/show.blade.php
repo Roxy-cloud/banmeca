@@ -22,8 +22,22 @@
             <th>Existencia</th>
             <td>{{ $medicamento->Existencia }}</td> 
         </tr>
+<<<<<<< HEAD
 
         
+=======
+        <tr>
+            <th>IMAGEN</th>
+            <td>
+        @if($medicamento->imagen)
+        <img src="{{ url($medicamento->imagen) }}" alt="" class="img-thumbnail" style="max-width: 100px;">
+        @else
+            <p>No hay imagen disponible</p>
+        @endif
+    </td> 
+        </tr>
+    
+>>>>>>> e2a8b4e (Primer commit)
          <a href="{{ route('medicamentos.edit', $medicamento->id) }}" class="btn btn-warning">Editar</a>
 
 <!-- Formulario para eliminar -->
