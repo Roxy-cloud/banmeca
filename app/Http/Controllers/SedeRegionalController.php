@@ -10,6 +10,7 @@ class SedeRegionalController extends Controller
 {
     public function index()
     {
+        
         $sedeRegional = SedeRegional::all();
         return view('admin.sede_regional.index', compact('sedeRegional'));
     }

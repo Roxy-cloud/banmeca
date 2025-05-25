@@ -7,6 +7,7 @@ use App\Models\Benefactor;
 use App\Models\Equipment;
 use App\Models\Medicamento;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class BenefactorController extends Controller
 {
@@ -27,7 +28,8 @@ class BenefactorController extends Controller
     // Almacenar un nuevo benefactor
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+
             'Nombre' => 'required|string|max:255',
             'Tipo' => 'required|in:Persona Natural,Institución',
             'RIF_Cedula' => 'required|string|unique:benefactors',
@@ -36,8 +38,9 @@ class BenefactorController extends Controller
             'email' => 'nullable|email|max:255',
         ]);
 
-        $benefactor = Benefactor::create($request->all());
-        return response()->json($benefactor, 201);
+        Benefactor::create($validatedData);
+
+        return redirect()->route('benefactors.index')->with('success', 'Benefactor registrado');
     }
 
     // Mostrar un benefactor específico
@@ -48,12 +51,25 @@ class BenefactorController extends Controller
     return view('admin.benefactors.show', compact('benefactor', 'medicamento','equipment')); // Pasa los datos a la vista
 }
 
+
+
+
+
+public function generarHistorial($benefactorId)
+{
+    $benefactor = Benefactor::with(['medicamentos', 'equipments'])->findOrFail($benefactorId);
+
+    $pdf = PDF::loadView('pdf.historial_benefactor', compact('benefactor'))
+        ->setPaper('letter', 'portrait'); // Configurar tamaño carta
+
+    return $pdf->stream('HistorialBenefactor.pdf'); // Muestra el PDF en el navegador
+}
+
+
     // Mostrar el formulario para editar un benefactor específico
     public function edit($id)
     {
         $benefactor = Benefactor::findOrFail($id);
-    
-        // Retornar una vista con los datos del benefactor
         return view('admin.benefactors.edit', compact('benefactor'));
     }
     
@@ -71,17 +87,16 @@ class BenefactorController extends Controller
             'email' => 'nullable|email|max:255',
         ]);
     
-        // Encontrar el beneficiario o lanzar un error 404
+        // Encontrar el benefactor o lanzar un error 404
         $benefactor = Benefactor::findOrFail($id);
     
-        // Actualizar solo los campos permitidos
-        $benefactor->update($request->only(['Nombre', 'Tipo', 'RIF_Cedula', 'Direccion', 'Telefono', 'email']));
-    
         // Responder con un mensaje de éxito y los datos actualizados
-        return response()->json([
-            'message' => 'Benefactor actualizado exitosamente.',
-            'benefactor' => $benefactor,
-        ]);
+        $benefactor->update($request->all());
+
+        return redirect()->route('benefactors.index')
+                         ->with('success', 'benefactor actualizado con éxito.');
+     
+        
     }
     
 

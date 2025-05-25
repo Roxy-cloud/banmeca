@@ -67,7 +67,7 @@ class EquipmentController extends Controller
     
         $equipo->save();
     
-        return redirect()->route('equipments.index')->with('success', 'Equipo actualizado exitosamente.');
+        return redirect()->route('equipments.index')->with('success', 'Equipo agregado exitosamente.');
 
     }
  
@@ -91,8 +91,9 @@ class EquipmentController extends Controller
      */
     public function edit(Equipment $equipment)
     {
-        $insumos = Insumo::all(); // Obtener todos los insumos para el formulario de edición
-        return view('admin.equipments.edit', compact('equipment', 'insumos')); // Pasar los insumos a la vista
+       $insumos = Insumo::all(); // Obtener todos los insumos para el formulario
+        $benefactors = Benefactor::all(); // Obtener todos los benefactores para el formulario
+        return view('admin.equipments.edit', compact('equipment', 'insumos', 'benefactors')); // Pasar los insumos a la vista
     }
 
     /**
@@ -109,6 +110,7 @@ class EquipmentController extends Controller
  
     // Validar los datos proporcionados por el usuario
     $request->validate([
+        'benefactor_id' => 'required|exists:benefactors,id',
         'Tipo' => 'string|nullable',
         'Marca' => 'string|nullable',
         'Modelo' => 'string|nullable',
@@ -118,6 +120,10 @@ class EquipmentController extends Controller
     ]);
 
     // Actualizar los campos proporcionados
+
+    $equipo->insumo_id = $request->insumo_id;
+    $equipo->benefactor_id = $request->benefactor_id;
+    $equipo->Fecha_Donacion = $request->Fecha_Donacion;
     $equipo->Tipo = $request->Tipo ?? $equipo->Tipo;
     $equipo->Marca = $request->Marca ?? $equipo->Marca;
     $equipo->Modelo = $request->Modelo ?? $equipo->Modelo;
@@ -139,7 +145,7 @@ class EquipmentController extends Controller
     return redirect()->route('equipments.index')->with('success', 'Equipo actualizado exitosamente.');
 }
 
-    
+
 
     /**
      * Remove the specified resource from storage.

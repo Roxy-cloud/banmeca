@@ -3,118 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Models\Insumo;
-use App\Models\Medicamento;
 use App\Models\Benefactor;
+use App\Models\Medicamento;
+use App\Models\Equipment;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InsumoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+  public function index()
 {
-    $insumos = Insumo::with(['medicamentos', 'equipments'])->get();
+    $insumosCount = Insumo::count();
 
-    return view('admin.insumos.index', compact('insumos'));
+    // Obtener medicamentos y equipos agrupados por fecha y benefactor
+    $insumosAgrupados = Medicamento::with('benefactor')
+        ->orderBy('Fecha_Donacion', 'desc')
+        ->get()
+        ->groupBy(['Fecha_Donacion', 'benefactor.Nombre']);
+
+    $equipmentsAgrupados = Equipment::with('benefactor')
+        ->orderBy('Fecha_Donacion', 'desc')
+        ->get()
+        ->groupBy(['Fecha_Donacion', 'benefactor.Nombre']);
+
+    return view('admin.insumos.index', compact('insumosAgrupados', 'equipmentsAgrupados', 'insumosCount'));
 }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+
     public function create()
     {
-        $insumo = Benefactor::all(); // Obtener todas las insumo para el formulario
-        return view('insumos.create', compact('insumo')); // Mostrar formulario de creación
+        return view('admin.insumos.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
         $request->validate([
-            'insumo_id' => 'required|exists:insumo,id',
-            'benefactor_id' => 'required|exists:benefactor,id',
-            'Tipo_Insumo' => 'required|in:Medicamento,Equipment',
-            'Nombre' => 'required|exists:medicamento, id',
-            'Tipo' => 'required|exists:equipment, id',
+            'tipo' => 'required|in:medicamento,equipo_medico',
+
         ]);
 
-        // Crear el nuevo insumo
         Insumo::create($request->all());
 
-        return redirect()->route('insumos.index')
-                         ->with('success', 'Insumo creado con éxito.');
+        return redirect()->route('insumos.index')->with('success', 'Insumo registrado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Insumo  $insumo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Insumo $insumo)
-    {
-
-        return view('admin.insumos.show', compact('insumo')); // Mostrar detalles del insumo
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Insumo  $insumo
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Insumo $insumo)
     {
-        $insumo = Benefactor::all(); // Obtener todas las insumo para el formulario de edición
-        return view('insumos.edit', compact('insumo')); // Mostrar formulario de edición
+        return view('admin.insumos.edit', compact('insumo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Insumo  $insumo
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Insumo $insumo)
     {
-        // Validar los datos del formulario
         $request->validate([
-            'insumo_id' => 'required|exists:insumo,id',
-            'benefactor_id' => 'required|exists:benefactor,id',
-            'Nombre_Insumo' => 'required|string|max:255',
-            'Tipo_Insumo' => 'required|in:Medicamento,Equipo Médico',
+            'tipo' => 'required|in:medicamento,equipo_medico',
+
         ]);
+        
+        $insumo->update($request->all());        
 
-        // Actualizar el insumo existente
-        $insumo->update($request->all());
-
-        return redirect()->route('insumos.index')
-                         ->with('success', 'Insumo actualizado con éxito.');
+        return redirect()->route('insumos.index')->with('success', 'Insumo actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Insumo  $insumo
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Insumo $insumo)
-    {
-        $insumo->delete();
 
-        return redirect()->route('insumos.index')
-                         ->with('success', 'Insumo eliminado con éxito.');
+
+    public function generarComprobantePorFecha(Request $request)
+{
+    $fecha = $request->input('fecha', now()->toDateString());
+
+    // Verificar si hay insumos en la fecha seleccionada
+    $benefactores = Benefactor::whereHas('medicamentos', function ($query) use ($fecha) {
+        $query->whereDate('Fecha_Donacion', $fecha);
+    })->orWhereHas('equipments', function ($query) use ($fecha) {
+        $query->whereDate('Fecha_Donacion', $fecha);
+    })->get();
+
+    if ($benefactores->isEmpty()) {
+        return redirect()->route('insumos.index')->with('error', 'No hay insumos registrados en la fecha seleccionada.');
     }
+
+    // Generar comprobante si hay registros
+    $comprobantes = [];
+    foreach ($benefactores as $benefactor) {
+        $comprobantes[$benefactor->nombre] = [
+            'medicamentos' => $benefactor->medicamentos()->whereDate('Fecha_Donacion', $fecha)->get(),
+            'equipments' => $benefactor->equipments()->whereDate('Fecha_Donacion', $fecha)->get(),
+        ];
+    }
+
+    $pdf = Pdf::loadView('admin.insumos.comprobante', compact('comprobantes', 'fecha'))->setPaper('letter');
+
+    return $pdf->download("comprobante_$fecha.pdf");
 }
-
+ 
+    
+}

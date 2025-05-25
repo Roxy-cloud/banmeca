@@ -49,52 +49,38 @@ class UserController extends Controller
     }
     
 
-    public function edit()
-    {
-        $user = auth()->user();
-        $roles = Role::all(); // Obtener todos los roles disponibles
-    
-        return view('admin.users.edit', compact('user', 'roles'));
-    }
-    
-    
-    public function update(Request $request, $id)
+
+    public function edit($id)
     {
         $user = User::findOrFail($id);
-    
-        $validatedData = $request->validate([
+        $roles = Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validación de imagen
+            'role' => 'required|exists:roles,name',
         ]);
-    
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-    
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
-    
-        // Guardar la imagen si el usuario subió una nueva
-        if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = 'storage/' . $avatarPath;
-        }
-    
-        if (auth()->user()->hasRole('admin') && $request->has('role')) {
-            $request->validate([
-                'role' => 'required|exists:roles,name',
-            ]);
-            $user->syncRoles([$request->role]);
-        }
-    
+
         $user->save();
-    
-        return redirect()->route('users.index')->with('success', 'Datos actualizados correctamente.');
+
+        $user->syncRoles([$request->role]); // Actualizar rol del usuario
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
-    
-    
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);

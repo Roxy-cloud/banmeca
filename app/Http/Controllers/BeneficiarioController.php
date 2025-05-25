@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Beneficiario;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Http\Requests\BeneficiarioRequest;
 
@@ -16,9 +17,15 @@ class BeneficiarioController extends Controller
     public function index()
     {
         $beneficiarios = Beneficiario::all(); // Obtener todos los beneficiarios
-        return view('beneficiarios.index', compact('beneficiarios')); // Pasar a la vista
+        return view('admin.beneficiarios.index', compact('beneficiarios')); // Pasar a la vista
     }
-
+    public function generarPDF($id)
+    {
+        $beneficiario = Beneficiario::findOrFail($id);
+        
+        $pdf = Pdf::loadView('pdf.historial_beneficiario', compact('beneficiario'));
+        return $pdf->download('historial_beneficiario.pdf');
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -26,7 +33,7 @@ class BeneficiarioController extends Controller
      */
     public function create()
     {
-        return view('beneficiarios.create'); // Mostrar formulario de creación
+        return view('admin.beneficiarios.create'); // Mostrar formulario de creación
     }
 
     /**
@@ -35,25 +42,23 @@ class BeneficiarioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BeneficiarioRequest $request)
+    public function store(Request $request)
 {
-    if ($request->hasFile('Informe_Medico')) {
-        $request->merge(['Informe_Medico' => $request->file('Informe_Medico')->store('informes_medicos')]);
-    }
-    $validated = $request->validate([
+   
+    $validatedData = $request->validate([
         'Nombre' => 'required',
-        'Cedula' => 'required|unique:beneficiarios',
+        'Cedula' => 'required',
+        'sexo' => 'required',
+        'edad' => 'required',    
         'Direccion' => 'required',
         'Telefono' => 'required',
         'Informe_Medico' => 'nullable|mimes:pdf,jpg,png|max:2048'
     ]);
 
-    if ($request->hasFile('Informe_Medico')) {
-        $validated['Informe_Medico'] = $request->file('Informe_Medico')->store('informes_medicos');
-    }
+   
 
-    Beneficiario::create($request->validated());
-    return redirect()->route('beneficiarios.create')->with('success', 'Beneficiario registrado');
+    Beneficiario::create($validatedData);
+    return redirect()->route('beneficiarios.index')->with('success', 'Beneficiario registrado');
 }
 
 
@@ -65,7 +70,7 @@ class BeneficiarioController extends Controller
      */
     public function show(Beneficiario $beneficiario)
     {
-        return view('beneficiarios.show', compact('beneficiario')); // Mostrar detalles del beneficiario
+        return view('admin.beneficiarios.show', compact('beneficiario')); // Mostrar detalles del beneficiario
     }
 
     /**
@@ -76,7 +81,7 @@ class BeneficiarioController extends Controller
      */
     public function edit(Beneficiario $beneficiario)
     {
-        return view('beneficiarios.edit', compact('beneficiario')); // Mostrar formulario de edición
+        return view('admin.beneficiarios.edit', compact('beneficiario')); // Mostrar formulario de edición
     }
 
     /**
@@ -91,7 +96,9 @@ class BeneficiarioController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'Nombre' => 'required|string|max:255',
-            'Cedula' => 'required|string|unique:beneficiarios,Cedula,'.$beneficiario->id.'|max:20',
+            'Cedula' => 'required|string|,'.$beneficiario->id.'|max:20',
+            'sexo' => 'required',
+            'edad' => 'required',
             'Direccion' => 'required|string|max:255',
             'Telefono' => 'required|string|max:20',
             'Informe_Medico' => 'nullable|string',

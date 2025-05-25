@@ -16,40 +16,27 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $user = $request->user();
-    
-        if (!$user->hasAnyRole(['admin', 'responsable', 'benefactor'])) {
-            abort(403, 'No tienes permiso para acceder a esta página.');
-        }
-    
-        return view('profile.edit', ['user' => $user]);
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
     }
-    
 
     /**
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $user = $request->user();
-        $user->fill($request->validated());
-    
-        // Si el usuario cambia el correo, restablecer la verificación
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
         }
-    
-        // Si el usuario sube una nueva imagen de perfil
-        if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $avatarPath;
-        }
-    
-        $user->save();
-    
+
+        $request->user()->save();
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-    
+
     /**
      * Delete the user's account.
      */

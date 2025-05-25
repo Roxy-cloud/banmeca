@@ -27,12 +27,7 @@ class SedeParroquialController extends Controller
     
         public function create()
         {
-            $role = Role::where('name', 'responsable_parroquial')->first(); // Definir el rol
-            
-                if (!$role) {
-                    return redirect()->back()->with('error', 'El rol responsable parroquial no existe.');
-                }
-            $responsables = $role->users;
+            $responsables = $this->obtenerResponsables();
             $sedesRegionales = SedeRegional::all();
         
             return view('admin.sede_parroquial.create', compact('responsables', 'sedesRegionales'));
@@ -41,13 +36,14 @@ class SedeParroquialController extends Controller
         public function store(Request $request)
         {
             $validatedData = $request->validate([
-                'SedeRegional_id' => 'required|exists:sede_regional,id',
-                'Nombre' => 'required|string|max:255',
-                'Direccion' => 'required|string|max:255',
-                'user_id' => 'required|exists:users,id',
-                'telefono' => 'required|string|max:15', // Validar el campo teléfono
 
-            ]);
+                    'SedeRegional_id' => 'required|exists:sede_regional,id',
+                    'Nombre' => 'required|string|max:255',
+                    'Direccion' => 'required|string|max:255',
+                    'user_id' => 'nullable|exists:users,id',
+                    'telefono' => 'required|regex:/^[0-9]{4}-[0-9]{7}$/',
+                ]);
+                
         
             SedeParroquial::create($validatedData);
         
