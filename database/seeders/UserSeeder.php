@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
         // Crear algunos roles si no existen
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $benefactorRole = Role::firstOrCreate(['name' => 'benefactor']);
+        $samanRole = Role::firstOrCreate(['name' => 'usuario_saman']);
         $responsableRole = Role::firstOrCreate(['name' => 'responsable_parroquial']);
 
         // Crear usuarios y asignarles roles
@@ -35,6 +36,14 @@ class UserSeeder extends Seeder
             'password' => bcrypt('12345678'),
         ]);
         $responsable->assignRole($responsableRole);
+
+        $saman = User::create([
+            'name' => 'Usuario Saman',
+            'email' => 'saman@example.com',
+            'password' => bcrypt('12345678'),
+        ]);
+        $saman->assignRole($samanRole);
+
 
         $benefactor = User::create([
             'name' => 'Benefactor',

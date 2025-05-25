@@ -11,20 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('insumos', function (Blueprint $table) {
+        Schema::create('componentes', function (Blueprint $table) {
             $table->id();
-            $table->enum('tipo', ['medicamento', 'equipo_medico']);
+            $table->string('Nombre');
             $table->timestamps();
         });
-        
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('insumos');
+        Schema::dropIfExists('componentes');
     }
 };

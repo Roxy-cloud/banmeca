@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('beneficiarios', function (Blueprint $table) {
             $table->id();
             $table->string('Nombre'); // Nombre del beneficiario
-            $table->string('Cedula')->unique(); // Cédula del beneficiario
+            $table->string('Cedula'); // Cédula del beneficiario
+            $table->enum('sexo', ['M', 'F']); // sexo del beneficiario
+            $table->string('edad'); // edad del beneficiario
             $table->string('Direccion'); // Dirección del beneficiario
             $table->string('Telefono'); // Teléfono del beneficiario
             $table->string('Informe_Medico')->nullable(); // Informe Médico (archivo o referencia)
             $table->timestamps();
+          
+
+            
         });
     }
 

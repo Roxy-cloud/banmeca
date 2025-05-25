@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('medicamentos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('categoria_id'); // Clave Foránea
-            $table->unsignedBigInteger('insumo_id'); // Clave Foránea
+            $table->unsignedBigInteger('insumo_id'); // Clave Foránea 
             $table->unsignedBigInteger('benefactor_id'); // Clave Foránea
             $table->dateTime('Fecha_Donacion'); // Fecha de la Donación
             $table->string('Nombre');
             $table->string('Laboratorio');
-            $table->string('Componente');
+            $table->string('dosificacion');
+            $table->string('presentacion');
             $table->string('Existencia');
             $table->date('Fecha_Vencimiento');
             $table->string('imagen')->default('assets/img/storage/medicamento/medicina.png'); // Imagen por defecto
