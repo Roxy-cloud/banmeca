@@ -1,26 +1,19 @@
-PROYECTO BANMECA
-Este proyecto esta siendo realizado por estudiantes del IV trayecto de Ingenieria de la Universidad Politecnica Territorial Aristides Bastidas, sede Principal, Seccion 0754501
+S I S T E M A   I N F O R M A T I C O   D E  G E S T I O N  D E  I N S U M O S   M E D I C O S
+████████████████████████████████████████████████████████████████████████
+█                                                                      █ 
+█    ██████╗   █████╗ ███╗   ██╗███╗   ███╗███████╗ ██████╗ █████╗     █
+█    ██╔══██╗ ██╔══██╗████╗  ██║████╗ ████║██╔════╝██╔════╝██╔══██╗    █
+█    ██████╔╝ ███████║██╔██╗ ██║██╔████╔██║█████╗  ██║     ███████║    █
+█    ██╔══██╗ ██╔══██║██║╚██╗██║██║╚██╔╝██║██╔══╝  ██║     ██╔══██║    █
+█    ██████╔╝ ██║  ██║██║ ╚████║██║ ╚═╝ ██║███████╗╚██████╗██║  ██║    █
+█    ╚═════╝  ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝    █
+████████████████████████████████████████████████████████████████████████
+Este sistema está siendo realizado para dar solucion al problema planteado por el Banco de Medicinas de Cáritas de San Felipe, en el estado Yaracuy, donde manifestaron que el punto crítico esta en el registro y control de medicamentos e insumos medicos que se reciben para dar en calidad de donacion a las personas en situacion de vulnerabilidad. El proyecto sociotecnologico inicia con la propuesta de crear un sistema informatico para facilitar el registro y distribucion de insumos medicos a la poblacion a traves de jornadas medicas y sedes parroquiales o vicariatos a nivel regional. Una propuesta que puede escalar a nivel nacional ya que seria de utilidad a todas las sedes del Banco de Medicinas de Cáritas a nivel nacional.
 
-Titulado: Desarrollo de un Sistema de Gestion de Insumos Médicos para el Banco de Medicinas de Caritas de San Felipe, BANMECA se trata de una solucion tecnologica a la problemática presentada por Cáritas de San Felipe, el cual recibe diversos insumos médicos en donacion para, a su vez, donarlos a las poblaciones más necesitadas, tanto en su propia sede como en las sedes cáritas que se encuentran en diversas parroquias y vicariatos del estado Yaracuy.
+el sistema informático debe permitir el acceso a cuatro (04) tipos de usuarios:
+    *el usuario admin, quien gestiona todas las operaciones relacionadas con el banco de medicinas,  gestion de usuarios del sistema, gestion de solicitudes y beneficiarios, generacion de reportes en general.
+    *el usuario responsable_parroquial, quien puede acceder para procesar las solicitudes de los beneficiarios
+    *el usuario_saman, quien podrá acceder para registrar las jornadas medicas y descargar reportes de las mismas
+    *el usuario benefactor, quien podra acceder para registrar los insumos que quiera donar
 
-Descripción de las Relaciones
-un benefactor dona Insumo de uno a muchos insumos medicos
-los insumos medicos pueden ser de dos tipos: Equipos medicos y medicamentos. los insumos se reciben en la sede caritas regional y pueden llegar desde la sede Caritas en Caracas o por distintas personas o instituciones que deseen hacer sus aportes en insumos médicos. 
-la sede caritas regional distribuye de uno a muchos medicamentos a las sedes caritas parroquiales.
-los beneficiarios pueden pedir que les donen medicamentos en cualquiera de las distintas sedes caritas, incluyendo la regional. 
-los equipos medicos el beneficiario debe solicitarlos en la sede caritas regional en calidad de comodato.
-
-Notas Adicionales
-Comodato: La entidad "Equipo Médico (Comodato)" es crucial para gestionar los equipos prestados. Debe incluir atributos que permitan controlar el estado del equipo y la fecha de devolución.
-
-Benefactores: Es importante categorizar a los benefactores como personas naturales o instituciones, ya que los requisitos y el seguimiento pueden ser diferentes.
-
-Sedes: La relación con las sedes permite rastrear la distribución de los recursos y dónde se están utilizando.
-
-Documentación: Mantener un registro de los informes médicos de los beneficiarios es crucial para justificar las insumo y asegurar que se están utilizando correctamente.
-
-Cáritas San Felipe.
-
-Escalabilidad: pudiera usarse tanto a nivel regional como nacional.
-
-Seguridad: Implementa medidas de seguridad adecuadas para proteger la información sensible de los benefactores y beneficiarios.
+En San Felipe, Estado Yaracuy, a los 22 dias del mes de Marzo de 2025.
