@@ -13,13 +13,25 @@ class Beneficiario extends Model
     protected $fillable = [
         'Nombre',
         'Cedula',
+        'sexo',
+        'edad',
         'Direccion',
         'Telefono',
         'Informe_Medico',
     ];
-    public function solicitudes()
-{
-    return $this->hasMany(Solicitud::class);
-}
+     public function donacionesMedicamentos()
+    {
+        return $this->hasMany(DonacionMedicamento::class);
+    }
+
+    public function donacionesEquipos()
+    {
+        return $this->hasMany(DonacionEquipo::class);
+    }
+
+    public function comodatosEquipos()
+    {
+        return $this->hasMany(ComodatoEquipo::class);
+    }
 
 }

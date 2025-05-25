@@ -15,9 +15,11 @@ class Medicamento extends Model
         'categoria_id',
         'insumo_id',
         'benefactor_id',
+        'Fecha_Donacion',
         'Nombre',
         'Laboratorio',
-        'Componente',
+        'dosificacion',
+        'presentacion',
         'Existencia',
         'Fecha_Vencimiento',
         'imagen',
@@ -38,4 +40,18 @@ class Medicamento extends Model
     {
         return $this->belongsTo(Benefactor::class, 'benefactor_id');
     }
+    public function solicitudes()
+    {
+        return $this->belongsTo(SolicitudMedicamento::class, 'solicitud_id');
+    }
+    public function componentes()
+{
+    return $this->belongsToMany(Componente::class, 'medicamento_componente');
+}
+public function pacientes()
+{
+    return $this->belongsToMany(Paciente::class, 'jornada_paciente')
+                ->withPivot('jornada_id', 'cantidad');
+}
+
 }
