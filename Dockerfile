@@ -26,8 +26,6 @@ COPY . .
 # Instala las dependencias de Laravel en modo producción
 RUN composer install --no-dev --optimize-autoloader
 
-# Configura caché para mejorar rendimiento
-RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 # Asegura permisos correctos en las carpetas necesarias
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
