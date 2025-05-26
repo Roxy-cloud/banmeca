@@ -1,9 +1,13 @@
+# Usa PHP 8.2 con FPM
 FROM php:8.2-fpm
 
+# Define el directorio de trabajo
 WORKDIR /var/www/html
 
-COPY . .
+# Instala Composer antes de copiar archivos del proyecto
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Instala dependencias del sistema necesarias para Laravel y PostgreSQL
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -12,5 +16,18 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql
 
+# Copia los archivos del proyecto al contenedor
+COPY . .
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Instala las dependencias de Laravel en modo producción
+RUN composer install --no-dev --optimize-autoloader
+
+# Configura caché para mejorar rendimiento
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
+
+# Asegura permisos correctos en las carpetas necesarias
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Comando para iniciar el servidor de Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
