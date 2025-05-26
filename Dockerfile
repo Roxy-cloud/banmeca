@@ -9,12 +9,16 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Instala dependencias del sistema necesarias para Laravel y PostgreSQL
 RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    unzip \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libpq-dev \
+    git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql
+    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql zip
+
 
 # Copia los archivos del proyecto al contenedor
 COPY . .
